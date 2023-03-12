@@ -13,15 +13,10 @@ public class InputManager : MonoBehaviour
     [SerializeField]
     private Rigidbody characterController;
 
-    private float initalHeight;
-
     [SerializeField]
     private Animator playerAnimator;
 
-    private void Awake()
-    {
-        initalHeight = characterController.transform.position.y;
-    }
+    private bool canMove = true;
 
     private void MoveCharacter()
     {
@@ -38,6 +33,28 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MoveCharacter();
+        if (canMove)
+        {
+            MoveCharacter();
+        }
+    }
+
+    public void CanMoveSetter(bool state)
+    {
+        canMove = state;
+    }
+
+    // This is a coroutine that starts whenever the player attacks
+    private IEnumerator MovementToggle()
+    {
+        StopCoroutine(MovementToggle());
+        canMove = false;
+        yield return new WaitForSeconds(1f);
+        canMove = true;
+    }
+
+    public void MoveToggle()
+    {
+        StartCoroutine(MovementToggle());
     }
 }
