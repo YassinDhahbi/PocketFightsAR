@@ -17,4 +17,15 @@ public class CharacterLoader : MonoBehaviour
     private List<GameObject> pooledCharacters;
 
     public int selectedCharacter;
+
+    private void Awake()
+    {
+        LoadCharacter();
+    }
+
+    private void LoadCharacter()
+    {
+        pooledCharacters[selectedCharacter].SetActive(true);
+        manager.characterData = charactersData[selectedCharacter];
+    }
 }

@@ -18,6 +18,8 @@ public class InputManager : MonoBehaviour
 
     private bool canMove = true;
 
+    public CharacterData characterData;
+
     private void MoveCharacter()
     {
         // Get the movement direction from the joystick input
@@ -56,5 +58,39 @@ public class InputManager : MonoBehaviour
     public void MoveToggle()
     {
         StartCoroutine(MovementToggle());
+    }
+
+    public void PlayAnimation(string anim)
+    {
+        playerAnimator.SetTrigger(anim.ToLower());
+    }
+
+    public void ShieldingState(bool state)
+    {
+        playerAnimator.SetBool("block", state);
+        canMove = !state;
+    }
+
+    public void UseSkill()
+    {
+        MoveToggle();
+        print("Entered void");
+        switch (characterData.characterClass)
+        {
+            case CharacterClass.Warrior:
+                StartCoroutine(RageMode());
+                break;
+        }
+    }
+
+    private IEnumerator RageMode()
+    {
+        print("Entered coroutine");
+        playerAnimator.speed = 3;
+        speedModifer *= 3;
+        yield return new WaitForSeconds(characterData.cooldown);
+        playerAnimator.speed = 1;
+        speedModifer = characterData.speed;
+        print("Exited coroutine");
     }
 }

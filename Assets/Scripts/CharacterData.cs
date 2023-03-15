@@ -14,7 +14,11 @@ public class CharacterData : ScriptableObject
     [Range(50f, 70f)]
     public float speed;
 
+    [Range(5f, 10f)]
+    public float cooldown;
+
     public Vector3 characterOffset;
+
     public List<InteractableIcon> buttons;
 }
 
