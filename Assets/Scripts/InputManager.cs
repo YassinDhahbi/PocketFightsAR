@@ -8,7 +8,7 @@ public class InputManager : MonoBehaviour
     private FixedJoystick joystickInputSource;
 
     [SerializeField]
-    private float speedModifer;
+    private float speedModifer, rageModifier;
 
     [SerializeField]
     private Rigidbody characterController;
@@ -19,6 +19,7 @@ public class InputManager : MonoBehaviour
     private bool canMove = true;
 
     public CharacterData characterData;
+    public bool canAttack, isBlocking = false;
 
     private void MoveCharacter()
     {
@@ -63,18 +64,23 @@ public class InputManager : MonoBehaviour
     public void PlayAnimation(string anim)
     {
         playerAnimator.SetTrigger(anim.ToLower());
+        if (anim.Equals("attack"))
+        {
+            StartCoroutine(AttackBehaviour(1f));
+        }
     }
 
     public void ShieldingState(bool state)
     {
         playerAnimator.SetBool("block", state);
         canMove = !state;
+        isBlocking = state;
     }
 
     public void UseSkill()
     {
         MoveToggle();
-        print("Entered void");
+
         switch (characterData.characterClass)
         {
             case CharacterClass.Warrior:
@@ -83,14 +89,19 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    private IEnumerator AttackBehaviour(float duration)
+    {
+        canAttack = true;
+        yield return new WaitForSeconds(duration);
+        canAttack = false;
+    }
+
     private IEnumerator RageMode()
     {
-        print("Entered coroutine");
-        playerAnimator.speed = 3;
-        speedModifer *= 3;
+        playerAnimator.speed = rageModifier;
+        speedModifer *= rageModifier;
         yield return new WaitForSeconds(characterData.cooldown);
         playerAnimator.speed = 1;
         speedModifer = characterData.speed;
-        print("Exited coroutine");
     }
 }

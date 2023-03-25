@@ -26,7 +26,8 @@ public enum CharacterClass
 {
     Warrior,
     Monk,
-    Mage
+    Mage,
+    Enemy
 }
 
 public enum ButtonInteraction

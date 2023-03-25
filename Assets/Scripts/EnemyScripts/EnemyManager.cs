@@ -16,13 +16,14 @@ public class EnemyManager : MonoBehaviour
     [SerializeField]
     private float lerpSpeed, minDistance;
 
-    private void Update()
-    {
-    }
+    [SerializeField]
+    private HealthManager healthManager;
+
+    public bool canAttack;
 
     private void MovementBehaviour()
     {
-        if (Vector3.Distance(transform.position, target.position) > minDistance)
+        if (Vector3.Distance(transform.position, target.position) > minDistance && healthManager.isDead == false)
         {
             // calculate velocity of the rigidbody
             float velocity = rb.velocity.normalized.magnitude;
@@ -48,11 +49,20 @@ public class EnemyManager : MonoBehaviour
         MovementBehaviour();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
+        if (other.TryGetComponent(out TagScript tagger) && tagger.tagValue == Tag.Player && !healthManager.isDead)
+        {
+            canAttack = true;
+            animator.SetTrigger("attack");
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
+        if (other.TryGetComponent(out TagScript tagger) && tagger.tagValue == Tag.Player && !healthManager.isDead)
+        {
+            canAttack = false;
+        }
     }
 }
